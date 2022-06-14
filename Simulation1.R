@@ -44,7 +44,7 @@ regmix.reg.boot <- function(dat, B, n){
   return(regmix.boot)
 }
 
-## Produce Web Figure 1 in the supporting information:
+## Produce Web Figure 1 in the Supporting Information:
 set.seed(2)
 sim.emg_reg <- function(xmin, xmax, n, beta, sigma, alpha){
   m = length(beta)
@@ -173,7 +173,6 @@ dat2$Group <- Z
 length(dat2$Group[dat2$Group=="Gaussian"])
 length(dat2$Group[dat2$Group=="exponential"])
 
-### Produce Web Figure 2 in the Supporting Information
 ggplot(dat2, aes(x=x, y=y, colour = Group)) + geom_point(size = 0.8, aes(shape=Group))+
   xlab("x") + ylab("y")
 
@@ -187,5 +186,8 @@ ggplot(dat2, aes(x=x, y=y, colour = Cluster)) + geom_point(size = 0.8, aes(shape
   xlab("x") + ylab("y")
 
 ## Count observations classified to each component:
-dat2[dat2$Cluster== "Gaussian",]
-dat2[dat2$Cluster== "exponential",]
+length(dat2$Cluster[dat2$Cluster=="Gaussian"])
+length(dat2$Cluster[dat2$Cluster=="exponential"])
+
+## Produce Web Table 0 in the Supporting Information
+dat2
