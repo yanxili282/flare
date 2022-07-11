@@ -3,6 +3,7 @@
 library(MASS)
 library(emg)
 library(mixtools)
+library(ggplot2)
 
 ### load functions:
 flare.reg.boot <- function(dat, B, n){
@@ -45,28 +46,23 @@ regmix.reg.boot <- function(dat, B, n){
 }
 
 ## Produce Web Figure 1 in the Supporting Information:
-set.seed(2)
-sim.emg_reg <- function(xmin, xmax, n, beta, sigma, alpha){
-  m = length(beta)
-  X <- matrix(runif(n*(m-1), min = xmin, max = xmax), 
-              nrow = n, ncol = (m-1), byrow = FALSE, dimnames = NULL)
-  X <- cbind(1,X)
-  
-  E <- remg(n, mu = 0, sigma = sigma, lambda = alpha)
-  
-  Y <- X %*% beta + E
-  X <- X[,-1]
-  
-  sim.out <- list("X" = X,
-                  "Y" = Y)
-  return(sim.out)
-}
+set.seed(12)
+n <- 200
+x <- rnorm(n, 0, 1)
+beta <- c(-2, 4)
+sigma <- 0.5
+alpha <- 0.05
 
-sim <- sim.emg_reg(xmin=-10, xmax=10, n=500, beta=c(3, 1), sigma=0.5, alpha=0.05)
-simdat <- data.frame(sim$X, sim$Y)
-ggplot(simdat, aes(x=sim.X, y=sim.Y)) + geom_point(color="blue")+
+X <- cbind(1,x)
+E <- remg(n, mu = 0, sigma = sigma, lambda = alpha)
+Y <- X %*% beta + E
+X <- X[,-1]
+simdat <- data.frame(X, Y)
+ggplot(simdat, aes(x=X, y=Y)) + geom_point(size = 0.8, color = "#00A087B2")+
   xlab("x") + ylab("y")+ 
-  geom_abline(intercept = 3, slope = 1, color = "red")
+  geom_abline(intercept = -2, slope = 4, color = "red")
+
+
 
 set.seed(10)
 ### Produce Table 1 and Table 2 in the main paper
