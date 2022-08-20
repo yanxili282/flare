@@ -187,3 +187,62 @@ length(dat2$Cluster[dat2$Cluster=="exponential"])
 
 ## Produce Web Table 0 in the Supporting Information
 dat2
+
+## test the starting values:
+set.seed(12)
+n <- 1000
+x <- rnorm(n, 0, 1)
+lambda <- c(0.5, 0.5)
+beta <- c(1, 4)
+sigma <- 0.5
+alpha <- 0.05
+E <- c()
+Z <- c()
+for (i in 1:n){
+  indicator <- runif(1, min = 0, max = 1)
+  if (indicator <= lambda[1]){
+    eps <- rnorm(1, mean=0, sd=sigma)
+    z <- "Gaussian"
+    E <- c(E, eps)
+    Z <- c(Z, z)
+  } else{
+    eps <- rexp(1, rate=alpha)
+    z <- "exponential"
+    E <- c(E, eps)
+    Z <- c(Z, z)
+  }
+}
+E <- matrix(data = E, nrow = n, ncol = 1, byrow = FALSE,
+            dimnames = NULL)
+y <- cbind(1, x) %*% beta + E
+out_list <- list()
+for (i in 1:1000){
+  lambda <- runif(1, 0, 1)
+  beta1 <- rnorm(1, mean = 1, sd = 1)
+  beta2 <- rnorm(1, mean = 1, sd = 1)
+  sigma <- runif(1, 0, 5)
+  alpha <- runif(1, 0, 1)
+  out <- try.flare.reg(y, x, lambda=lambda, beta = c(beta1, beta2), sigma = sigma, alpha = alpha, emg = 0)
+  out_list[[i]] <- out
+}
+LAMBDA <- c()
+BETA1 <- c()
+BETA2 <- c()
+SIGMA <- c()
+ALPHA <- c()
+for (i in 1:1000){
+  LAMBDA[i] = out_list[[i]]$lambda[1]
+  BETA1[i] = out_list[[i]]$beta[1]
+  BETA2[i] = out_list[[i]]$beta[2]
+  SIGMA[i] = sqrt(out_list[[i]]$sigma)
+  ALPHA[i] = out_list[[i]]$alpha
+}
+lambda <- c(0.5, 0.5)
+beta <- c(1, 4)
+sigma <- 0.5
+alpha <- 0.05
+sqrt(mean((LAMBDA-lambda[1])^2))
+sqrt(mean((BETA1-beta[1])^2))
+sqrt(mean((BETA2-beta[2])^2))
+sqrt(mean((SIGMA-sigma)^2))
+sqrt(mean((ALPHA-alpha)^2))
